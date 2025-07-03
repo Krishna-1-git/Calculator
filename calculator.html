@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scientific Calculator</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class', // Enable class-based dark mode
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3B82F6',   // Custom blue
+            secondary: '#10B981', // Custom green
+            accent: '#F59E0B'     // Custom yellow
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Styles -->
+  <style>
+    /* Calculator Container Style */
+    .calculator {
+      background: linear-gradient(145deg, #f0f0f0, #ffffff);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border-radius: 20px;
+      transition: all 0.3s ease;
+    }
+
+    /* Calculator in Dark Mode */
+    .dark .calculator {
+      background: linear-gradient(145deg, #1f2937, #111827);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Button Hover/Click Effects */
+    .btn {
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    /* Display Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .display-text {
+      animation: fadeIn 0.3s ease;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300 min-h-screen flex flex-col">
+  <div class="container mx-auto px-4 py-8">
+
+    <!-- University Name -->
+    <h4 class="text-center text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">
+      Presidency University
+    </h4>
+
+    <!-- App Title -->
+    <h1 class="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-800 dark:text-gray-200">
+      Scientific Calculator
+    </h1>
+
+    <!-- Calculator Container -->
+    <div class="max-w-md mx-auto calculator p-6 mb-10 relative overflow-hidden">
+
+      <!-- Dark Mode Toggle Button -->
+      <button id="theme-toggle" class="absolute top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-800 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      </button>
+
+      <!-- Display Area -->
+      <div class="bg-gray-200 dark:bg-gray-800 rounded-lg p-4 mb-6 overflow-hidden">
+        <div id="calculation" class="text-right text-gray-600 dark:text-gray-400 h-6 text-sm"></div>
+        <div id="display" class="text-right text-3xl font-bold text-gray-900 dark:text-white truncate">0</div>
+      </div>
+
+      <!-- Calculator Buttons Grid -->
+      <div class="grid grid-cols-4 gap-4">
+        <!-- Basic Operations and Digits -->
+        <button onclick="clearDisplay()" class="btn bg-red-500 hover:bg-red-600 text-white p-3 rounded-lg text-lg font-medium">AC</button>
+        <button onclick="appendToDisplay('(')" class="btn bg-gray-300 dark:bg-gray-700 p-3 rounded-lg text-lg font-medium">(</button>
+        <button onclick="appendToDisplay(')')" class="btn bg-gray-300 dark:bg-gray-700 p-3 rounded-lg text-lg font-medium">)</button>
+        <button onclick="appendToDisplay('/')" class="btn bg-accent text-white p-3 rounded-lg text-lg font-medium">÷</button>
+
+        <!-- Digits 7-9 -->
+        <button onclick="appendToDisplay(7)" class="btn bg-gray-200 dark:bg-gray-600 p-3 rounded-lg text-lg font-medium">7</button>
+        <button onclick="appendToDisplay(8)" class="btn bg-gray-200 dark:bg-gray-600 p-3 rounded-lg text-lg font-medium">8</button>
+        <button onclick="appendToDisplay(9)" class="btn bg-gray-200 dark:bg-gray-600 p-3 rounded-lg text-lg font-medium">9</button>
+        <button onclick="appendToDisplay('*')" class="btn bg-accent text-white p-3 rounded-lg text-lg font-medium">×</button>
+
+        <!-- Digits 4-6 -->
+        <button onclick="appendToDisplay(4)" class="btn bg-gray-200 dark:bg-gray-600 p-3 rounded-lg text-lg font-medium">4</button>
+        <button onclick="appendToDisplay(5)" class="btn bg-gray-200 dark:bg-gray-600 p-3 rounded-lg text-lg font-medium">5</button>
+        <button onclick="appendToDisplay(6)" class="btn bg-gray-200 dark:bg-gray-600 p-3 rounded-lg text-lg font-medium">6</button>
+        <button onclick="appendToDisplay('-')" class="btn bg-accent text-white p-3 rounded-lg text-lg font-medium">-</button>
+
+        <!-- Digits 1-3 -->
+        <button onclick="appendToDisplay(1)" class="btn bg-gray-200 dark:bg-gray-600 p-3 rounded-lg text-lg font-medium">1</button>
+        <button onclick="appendToDisplay(2)" class="btn bg-gray-200 dark:bg-gray-600 p-3 rounded-lg text-lg font-medium">2</button>
+        <button onclick="appendToDisplay(3)" class="btn bg-gray-200 dark:bg-gray-600 p-3 rounded-lg text-lg font-medium">3</button>
+        <button onclick="appendToDisplay('+')" class="btn bg-accent text-white p-3 rounded-lg text-lg font-medium">+</button>
+
+        <!-- 0, Decimal and Equals -->
+        <button onclick="appendToDisplay(0)" class="btn bg-gray-200 dark:bg-gray-600 p-3 rounded-lg text-lg font-medium col-span-2">0</button>
+        <button onclick="appendToDisplay('.')" class="btn bg-gray-200 dark:bg-gray-600 p-3 rounded-lg text-lg font-medium">.</button>
+        <button onclick="calculate()" class="btn bg-primary text-white p-3 rounded-lg text-lg font-medium">=</button>
+
+        <!-- Scientific Functions -->
+        <button onclick="appendToDisplay('Math.sqrt(')" class="btn bg-indigo-500 text-white p-3 rounded-lg text-sm font-medium">√(x)</button>
+        <button onclick="appendToDisplay('Math.pow(')" class="btn bg-indigo-500 text-white p-3 rounded-lg text-sm font-medium">x^y</button>
+        <button onclick="appendToDisplay('Math.log(')" class="btn bg-indigo-500 text-white p-3 rounded-lg text-sm font-medium">ln(x)</button>
+        <button onclick="appendToDisplay('Math.log10(')" class="btn bg-indigo-500 text-white p-3 rounded-lg text-sm font-medium">log(x)</button>
+        <button onclick="appendToDisplay('Math.sin(')" class="btn bg-indigo-500 text-white p-3 rounded-lg text-sm font-medium">sin(x)</button>
+        <button onclick="appendToDisplay('Math.cos(')" class="btn bg-indigo-500 text-white p-3 rounded-lg text-sm font-medium">cos(x)</button>
+        <button onclick="appendToDisplay('Math.tan(')" class="btn bg-indigo-500 text-white p-3 rounded-lg text-sm font-medium">tan(x)</button>
+        <button onclick="appendToDisplay('Math.PI')" class="btn bg-indigo-500 text-white p-3 rounded-lg text-sm font-medium">π</button>
+        <button onclick="appendToDisplay('Math.exp(')" class="btn bg-indigo-500 text-white p-3 rounded-lg text-sm font-medium">e^x</button>
+        <button onclick="appendToDisplay('factorial(')" class="btn bg-indigo-500 text-white p-3 rounded-lg text-sm font-medium">x!</button>
+        <button onclick="appendToDisplay('Math.abs(')" class="btn bg-indigo-500 text-white p-3 rounded-lg text-sm font-medium">|x|</button>
+        <button onclick="appendToDisplay('Math.E')" class="btn bg-indigo-500 text-white p-3 rounded-lg text-sm font-medium">e</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calculator Logic -->
+  <script>
+    // Variables for current input and expression history
+    let currentInput = '0';
+    let calculation = '';
+    const displayElement = document.getElementById('display');
+    const calculationElement = document.getElementById('calculation');
+
+    // Update display with current input and animation
+    function updateDisplay() {
+      displayElement.textContent = currentInput;
+      calculationElement.textContent = calculation;
+      displayElement.classList.add('display-text');
+      setTimeout(() => displayElement.classList.remove('display-text'), 300);
+    }
+
+    // Append a number or operator to input
+    function appendToDisplay(value) {
+      if (currentInput === '0' && value !== '.') {
+        currentInput = value.toString();
+      } else {
+        currentInput += value.toString();
+      }
+      updateDisplay();
+    }
+
+    // Clear display and reset variables
+    function clearDisplay() {
+      currentInput = '0';
+      calculation = '';
+      updateDisplay();
+    }
+
+    // Calculate factorial of a number
+    function factorial(n) {
+      if (n < 0) return NaN;
+      if (n === 0 || n === 1) return 1;
+      return Array.from({ length: n }, (_, i) => i + 1).reduce((a, b) => a * b, 1);
+    }
+
+    // Evaluate expression and display result
+    function calculate() {
+      try {
+        calculation = currentInput;
+
+        // Replace factorial(x) with actual computed value
+        calculation = calculation.replace(/factorial\((\d+)\)/g, (_, num) => factorial(Number(num)));
+
+        // Evaluate using JavaScript eval()
+        currentInput = eval(calculation).toString();
+        calculation = '';
+        updateDisplay();
+      } catch (error) {
+        currentInput = 'Error';
+        updateDisplay();
+        setTimeout(clearDisplay, 1500);
+      }
+    }
+
+    // Toggle dark mode on button click and save in localStorage
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // Load dark mode based on previous choice or system preference
+    if (localStorage.getItem('theme') === 'dark' ||
+      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+
+    // Initialize display on load
+    updateDisplay();
+  </script>
+</body>
+</html>
